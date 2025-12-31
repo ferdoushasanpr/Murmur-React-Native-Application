@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,18 +7,45 @@ import {
   View,
 } from "react-native";
 
-export default function Login() {
+interface LoginProps {
+  onLoginSuccess: () => void;
+}
+
+export default function Login({ onLoginSuccess }: LoginProps): JSX.Element {
+  const [isLogin, setIsLogin] = useState(true);
+
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleAuth = () => {
+    onLoginSuccess();
+  };
+
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+  };
 
   return (
     <View style={styles.innerContainer}>
       <View style={styles.headerArea}>
         <Text style={styles.logoText}>Murmur</Text>
-        <Text style={styles.subtitleText}>Whisper into the void.</Text>
+        <Text style={styles.subtitleText}>
+          {isLogin ? "Whisper into the void." : "Join the silence."}
+        </Text>
       </View>
 
       <View style={styles.form}>
+        {!isLogin && (
+          <TextInput
+            style={styles.input}
+            placeholder="Full Name"
+            placeholderTextColor="#7a7a7a"
+            value={name}
+            onChangeText={setName}
+          />
+        )}
+
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -38,19 +65,27 @@ export default function Login() {
           secureTextEntry
         />
 
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Log In</Text>
+        <TouchableOpacity style={styles.button} onPress={handleAuth}>
+          <Text style={styles.buttonText}>
+            {isLogin ? "Log In" : "Create Account"}
+          </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.forgotBtn}>
-          <Text style={styles.forgotText}>Forgot Password?</Text>
-        </TouchableOpacity>
+        {isLogin && (
+          <TouchableOpacity style={styles.forgotBtn}>
+            <Text style={styles.forgotText}>Forgot Password?</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Don&apos;t have an account? </Text>
-        <TouchableOpacity>
-          <Text style={styles.signupText}>Sign Up</Text>
+        <Text style={styles.footerText}>
+          {isLogin ? "Don't have an account? " : "Already have an account? "}
+        </Text>
+        <TouchableOpacity onPress={toggleMode}>
+          <Text style={styles.footerText && { color: "#BB86FC" }}>
+            {isLogin ? "Create Account" : "Log In"}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -73,7 +108,7 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 42,
     fontWeight: "800",
-    color: "#BB86FC", // Soft purple accent
+    color: "#BB86FC",
     letterSpacing: 2,
   },
   subtitleText: {
@@ -101,10 +136,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     marginTop: 10,
-    shadowColor: "#BB86FC",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
     elevation: 8,
   },
   buttonText: {
