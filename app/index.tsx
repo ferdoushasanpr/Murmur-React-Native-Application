@@ -7,7 +7,7 @@ export default function Index(): JSX.Element {
   const router = useRouter();
 
   const handleLoginSuccess = (): void => {
-    router.replace("/screens/tabs/Timeline");
+    router.replace("/screens/(tabs)/Timeline");
   };
 
   return (

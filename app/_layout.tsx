@@ -7,20 +7,11 @@ export default function RootLayout(): JSX.Element {
   return (
     <ThemeProvider value={DarkTheme}>
       <StatusBar style="light" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: "#121212" },
-          animation: "fade_from_bottom",
-        }}
-      >
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-
         <Stack.Screen
-          name="timeline"
-          options={{
-            gestureEnabled: false,
-          }}
+          name="screens/(tabs)"
+          options={{ gestureEnabled: false }}
         />
       </Stack>
     </ThemeProvider>
