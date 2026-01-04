@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { JSX } from "react";
 import { StyleSheet, View } from "react-native";
+import { AuthProvider } from "./context/AuthContext";
 import Login from "./screens/Login";
 
 export default function Index(): JSX.Element {
@@ -11,9 +12,9 @@ export default function Index(): JSX.Element {
   };
 
   return (
-    <View style={styles.container}>
+    <AuthProvider><View style={styles.container}>
       <Login onLoginSuccess={handleLoginSuccess} />
-    </View>
+    </View></AuthProvider>
   );
 }
 

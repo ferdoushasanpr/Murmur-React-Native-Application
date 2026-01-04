@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuth } from "../context/AuthContext";
 
 interface LoginProps {
   onLoginSuccess: () => void;
@@ -18,6 +19,8 @@ export default function Login({ onLoginSuccess }: LoginProps): JSX.Element {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { login } = useAuth();
 
   const handleAuth = () => {
     if (isLogin) {
@@ -32,7 +35,12 @@ export default function Login({ onLoginSuccess }: LoginProps): JSX.Element {
           }
         )
         .then((response) => {
-          console.log("Login successful:", response.data);
+          const { token } = response.data;
+          const userId = response.data.data.user._id;
+
+          login(userId, token);
+
+          console.log("Global State Updated:", { userId, token });
           onLoginSuccess();
         })
         .catch((error) => {
@@ -50,7 +58,12 @@ export default function Login({ onLoginSuccess }: LoginProps): JSX.Element {
           }
         )
         .then((response) => {
-          console.log("Signup successful:", response.data);
+          const { token } = response.data;
+          const userId = response.data.data.user._id;
+
+          login(userId, token);
+
+          console.log("Global State Updated:", { userId, token });
           onLoginSuccess();
         })
         .catch((error) => {
