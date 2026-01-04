@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { JSX, useState } from "react";
 import {
   StyleSheet,
@@ -19,7 +20,43 @@ export default function Login({ onLoginSuccess }: LoginProps): JSX.Element {
   const [password, setPassword] = useState("");
 
   const handleAuth = () => {
-    onLoginSuccess();
+    if (isLogin) {
+      axios
+        .post(
+          "http://10.0.2.2:3000/auth/signin",
+          { email, password },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Login successful:", response.data);
+          onLoginSuccess();
+        })
+        .catch((error) => {
+          console.error("Login error:", error);
+        });
+    } else {
+      axios
+        .post(
+          "http://10.0.2.2:3000/auth/signup",
+          { name, email, password },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Signup successful:", response.data);
+          onLoginSuccess();
+        })
+        .catch((error) => {
+          console.error("Signup error:", error);
+        });
+    }
   };
 
   const toggleMode = () => {
