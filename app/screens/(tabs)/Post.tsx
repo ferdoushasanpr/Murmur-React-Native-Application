@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -12,11 +13,39 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Post() {
   const [content, setContent] = useState("");
   const router = useRouter();
   const MAX_CHARS = 280;
+
+  const { token } = useAuth();
+
+  const onSubmit = () => {
+    console.log("TOKEN VALUE:", token);
+    console.log("TOKEN TYPE:", typeof token);
+
+    axios
+      .post(
+        "http://10.0.2.2:3000/murmurs/me",
+        { content },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Murmur posted successfully:", response.data);
+        setContent("");
+        router.back();
+      })
+      .catch((error) => {
+        console.error("Error posting murmur:", error);
+      });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -39,6 +68,7 @@ export default function Post() {
               { opacity: content.length > 0 ? 1 : 0.5 },
             ]}
             disabled={content.length === 0}
+            onPress={onSubmit}
           >
             <Text style={styles.murmurButtonText}>Murmur</Text>
           </TouchableOpacity>
