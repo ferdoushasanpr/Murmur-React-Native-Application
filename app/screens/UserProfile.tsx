@@ -29,9 +29,22 @@ const UserProfile: React.FC = () => {
 
   const handleFollow = () => {
     setIsFollowing(!isFollowing);
+    axios
+      .post(`http://10.0.2.2:3000/follows/${profile.id}/follow`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log("Follow/unfollow response:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching follow status:", error);
+      });
   };
 
   useEffect(() => {
+    console.log(profile);
     axios
       .get(`http://10.0.2.2:3000/follows/${profile.id}/is-following`, {
         headers: {
@@ -63,7 +76,9 @@ const UserProfile: React.FC = () => {
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{profile.name}</Text>
         <Text style={styles.email}>{profile.email}</Text>
-        <Text style={styles.bio}>{profile.bio}</Text>
+        <Text style={styles.bio}>
+          {profile.bio.length > 0 ? profile.bio : "No bio available."}
+        </Text>
 
         {/* Stats */}
         <View style={styles.statsContainer}>
