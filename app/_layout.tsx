@@ -11,6 +11,7 @@ export default function RootLayout(): JSX.Element {
       <AuthProvider>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
+          <Stack.Screen name="screens/UserProfile" />
           <Stack.Screen
             name="screens/(tabs)"
             options={{ gestureEnabled: false }}

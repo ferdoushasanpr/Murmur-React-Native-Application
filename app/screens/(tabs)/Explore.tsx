@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -12,9 +13,12 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
+  bio: string;
+  followedCount: number;
+  followerCount: number;
   createdAt: string;
   // Add other fields from your API response
 }
@@ -34,6 +38,7 @@ export default function Explore() {
       const response = await axios.get(
         `http://10.0.2.2:3000/users/email/${searchQuery.trim()}`
       );
+      console.log("Search response:", response.data);
       setResult(response.data);
     } catch (error) {
       console.error("Search error:", error);
@@ -97,7 +102,24 @@ export default function Explore() {
             <Text style={styles.userName}>{result.name}</Text>
             <Text style={styles.userEmail}>{result.email}</Text>
 
-            <TouchableOpacity style={styles.profileButton} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.profileButton}
+              onPress={() => {
+                router.push({
+                  pathname: `../UserProfile`,
+                  params: {
+                    id: result._id,
+                    name: result.name,
+                    email: result.email,
+                    bio: result.bio,
+                    coverPhoto: "https://your-cover-image-url",
+                    profilePhoto: "https://your-profile-image-url",
+                    followers: result.followerCount,
+                    following: result.followedCount,
+                  },
+                });
+              }}
+            >
               <Text style={styles.profileButtonText}>Visit Profile</Text>
             </TouchableOpacity>
           </View>
