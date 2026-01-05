@@ -23,9 +23,6 @@ export default function Post() {
   const { token } = useAuth();
 
   const onSubmit = () => {
-    console.log("TOKEN VALUE:", token);
-    console.log("TOKEN TYPE:", typeof token);
-
     axios
       .post(
         "http://10.0.2.2:3000/murmurs/me",

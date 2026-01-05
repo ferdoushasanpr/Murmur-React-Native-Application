@@ -32,24 +32,12 @@ export default function Explore() {
             style={styles.searchIcon}
           />
           <TextInput
-            placeholder="Search Murmur"
+            placeholder="Search User by Email"
             placeholderTextColor="#a1a1a1"
             style={styles.input}
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
-        </View>
-      </View>
-
-      {/* Discovery State (No trending results right now) */}
-      <View style={styles.discoveryContainer}>
-        <View style={styles.discoveryContent}>
-          <View style={styles.iconCircle}>
-            <Ionicons name="compass-outline" size={30} color="#a1a1a1" />
-          </View>
-          <Text style={styles.discoveryText}>
-            Discover new trends and users.
-          </Text>
         </View>
       </View>
     </SafeAreaView>
