@@ -34,6 +34,21 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState("Murmurs");
   const { userId, token } = useAuth();
 
+  const deleteMurmur = (murmurId: string) => {
+    axios
+      .delete(`http://10.0.2.2:3000/murmurs/me/${murmurId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        setMurmurs(murmurs.filter((m) => m.id !== murmurId));
+      })
+      .catch((error) => {
+        console.error("Error deleting murmur:", error);
+      });
+  };
+
   useEffect(() => {
     axios
       .get("http://10.0.2.2:3000/users/me", {
@@ -84,7 +99,10 @@ export default function Profile() {
           <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="chatbubble-outline" size={18} color="#71767b" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={() => deleteMurmur(murmur.id)}
+          >
             <Ionicons name="trash-outline" size={18} color="#71767b" />
           </TouchableOpacity>
         </View>
