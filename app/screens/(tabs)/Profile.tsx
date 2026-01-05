@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Image,
@@ -32,7 +33,7 @@ export default function Profile() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [murmurs, setMurmurs] = useState<Murmur[]>([]);
   const [activeTab, setActiveTab] = useState("Murmurs");
-  const { userId, token } = useAuth();
+  const { userId, token, logout } = useAuth();
 
   const deleteMurmur = (murmurId: string) => {
     axios
@@ -126,10 +127,14 @@ export default function Profile() {
               <Text style={styles.topNavSubtitle}>0 Murmurs</Text>
             </View>
           </View>
-          <Image
-            source={{ uri: "https://i.pravatar.cc/150?u=me" }}
-            style={styles.miniAvatar}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              logout();
+              router.replace("../Login");
+            }}
+          >
+            <Ionicons name="log-out-outline" size={24} color="#fff" />
+          </TouchableOpacity>
         </View>
 
         {/* Cover Photo Area */}

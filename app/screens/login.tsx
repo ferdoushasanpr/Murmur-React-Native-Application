@@ -1,5 +1,6 @@
 import axios from "axios";
-import React, { JSX, useState } from "react";
+import { router } from "expo-router";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,12 +10,9 @@ import {
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 
-interface LoginProps {
-  onLoginSuccess: () => void;
-}
-
-export default function Login({ onLoginSuccess }: LoginProps): JSX.Element {
+export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
+  const [message, setMessage] = useState("");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -41,10 +39,12 @@ export default function Login({ onLoginSuccess }: LoginProps): JSX.Element {
           login(userId, token);
 
           console.log("Global State Updated:", { userId, token });
-          onLoginSuccess();
+          router.replace("/screens/(tabs)/Timeline");
         })
         .catch((error) => {
-          console.error("Login error:", error);
+          setMessage(
+            error.response.data.message || "Error logging in. Please try again."
+          );
         });
     } else {
       axios
@@ -64,10 +64,15 @@ export default function Login({ onLoginSuccess }: LoginProps): JSX.Element {
           login(userId, token);
 
           console.log("Global State Updated:", { userId, token });
-          onLoginSuccess();
+          router.replace("/screens/(tabs)/Timeline");
         })
         .catch((error) => {
-          console.error("Signup error:", error);
+          console.log("STATUS:", error.response?.status);
+          console.log("DATA:", error.response?.data);
+          console.log("HEADERS:", error.response?.headers);
+          setMessage(
+            error.response.data.message || "Error signing up. Please try again."
+          );
         });
     }
   };
@@ -86,6 +91,9 @@ export default function Login({ onLoginSuccess }: LoginProps): JSX.Element {
       </View>
 
       <View style={styles.form}>
+        <View style={{ marginBottom: 15 }}>
+          <Text style={{ color: "red", textAlign: "center" }}>{message}</Text>
+        </View>
         {!isLogin && (
           <TextInput
             style={styles.input}
