@@ -84,13 +84,19 @@ export default function Timeline(): JSX.Element {
         />
       </View>
 
-      <FlatList
-        data={murmurs}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
+      {murmurs.length > 0 ? (
+        <FlatList
+          data={murmurs}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Follow Someone to Get Murmurs</Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -130,4 +136,14 @@ const styles = StyleSheet.create({
   actionButton: { flexDirection: "row", alignItems: "center", width: "50%" },
   actionText: { color: "#a1a1a1", marginLeft: 5, fontSize: 14 },
   separator: { height: 1, backgroundColor: "#222" },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    color: "#a1a1a1",
+    fontSize: 16,
+    textAlign: "center",
+  },
 });
