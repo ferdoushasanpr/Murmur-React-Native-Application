@@ -147,7 +147,10 @@ export default function Profile() {
               source={{ uri: "https://i.pravatar.cc/150?u=me" }}
               style={styles.mainAvatar}
             />
-            <TouchableOpacity style={styles.editButton}>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => router.push("./EditProfile")}
+            >
               <Text style={styles.editButtonText}>Edit Profile</Text>
             </TouchableOpacity>
           </View>
