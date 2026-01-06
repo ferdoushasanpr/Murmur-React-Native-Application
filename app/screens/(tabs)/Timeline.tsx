@@ -1,5 +1,7 @@
+import { formatDate } from "@/app/utilities/date_format";
 import { Ionicons } from "@expo/vector-icons";
-import React, { JSX } from "react";
+import axios from "axios";
+import React, { JSX, useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -10,58 +12,33 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../../context/AuthContext";
 
 interface Murmur {
   id: string;
-  user: string;
-  handle: string;
-  time: string;
+  author: {
+    name: string;
+  };
   content: string;
-  likes: number;
-  comments: number;
-  avatar: string;
+  createdAt: string;
+  likeCount: number;
 }
-
-const DATA: Murmur[] = [
-  {
-    id: "1",
-    user: "Sarah Jenkins",
-    handle: "@sarahj",
-    time: "4m",
-    content:
-      "This is murmur number 1. Exploring the new Murmur app interface! #Excited",
-    likes: 13,
-    comments: 8,
-    avatar: "https://i.pravatar.cc/150?u=sarah",
-  },
-  {
-    id: "2",
-    user: "Alex Rivera",
-    handle: "@arivera",
-    time: "1h",
-    content:
-      "This is murmur number 2. Exploring the new Murmur app interface! #Excited",
-    likes: 26,
-    comments: 8,
-    avatar: "https://i.pravatar.cc/150?u=alex",
-  },
-];
 
 const MurmurItem: React.FC<{ item: Murmur }> = ({ item }) => (
   <View style={styles.card}>
-    <Image source={{ uri: item.avatar }} style={styles.avatar} />
+    <Image
+      source={{ uri: "https://i.pravatar.cc/150?u=sarah" }}
+      style={styles.avatar}
+    />
     <View style={styles.contentContainer}>
       <View style={styles.userHeader}>
-        <Text style={styles.userName}>{item.user}</Text>
-        <Text style={styles.handleText}>
-          {item.handle} · {item.time}
-        </Text>
+        <Text style={styles.userName}>{item.author.name}</Text>
+        <Text style={styles.handleText}> · {formatDate(item.createdAt)}</Text>
       </View>
       <Text style={styles.contentText}>{item.content}</Text>
       <View style={styles.actions}>
-        <ActionIcon name="heart-outline" count={item.likes} />
-        <ActionIcon name="chatbubble-outline" count={item.comments} />
-        <ActionIcon name="share-social-outline" />
+        <ActionIcon name="heart-outline" count={item.likeCount} />
+        <ActionIcon name="chatbubble-outline" />
       </View>
     </View>
   </View>
@@ -78,9 +55,24 @@ const ActionIcon: React.FC<{
 );
 
 export default function Timeline(): JSX.Element {
+  const [murmurs, setMurmurs] = useState<Murmur[]>([]);
+  const { token } = useAuth();
   const renderItem: ListRenderItem<Murmur> = ({ item }) => (
     <MurmurItem item={item} />
   );
+
+  useEffect(() => {
+    axios
+      .get("http://10.0.2.2:3000/murmurs/", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setMurmurs(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching murmurs:", error);
+      });
+  }, [murmurs]);
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -93,7 +85,7 @@ export default function Timeline(): JSX.Element {
       </View>
 
       <FlatList
-        data={DATA}
+        data={murmurs}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -131,11 +123,11 @@ const styles = StyleSheet.create({
   contentText: { color: "#e0e0e0", fontSize: 15, lineHeight: 20 },
   actions: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     marginTop: 12,
     paddingRight: 40,
   },
-  actionButton: { flexDirection: "row", alignItems: "center" },
+  actionButton: { flexDirection: "row", alignItems: "center", width: "50%" },
   actionText: { color: "#a1a1a1", marginLeft: 5, fontSize: 14 },
   separator: { height: 1, backgroundColor: "#222" },
 });
