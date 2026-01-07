@@ -1,50 +1,82 @@
-# Welcome to your Expo app 👋
+# Murmur – Mobile Social Application
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A cross-platform mobile application built with **React Native** and **TypeScript** that allows users to share "murmurs," follow friends, and engage with a global timeline. This project was developed as part of a technical evaluation.
 
-## Get started
+## 🚀 Features
 
-1. Install dependencies
+- **Authentication**: Secure Signup and Signin with JWT persistence.
+- **Global Timeline**: View murmurs from users you follow with **infinite scroll pagination** (10 per page).
+- **Social Interactions**: Follow/Unfollow users and LIKE murmurs.
+- **Own Detail**: Edit bio, change password, and manage your own posts.
+- **Other User Detail**: View user stats (Followers/Following) and their specific murmur history.
+- **Content Management**: Create new murmurs and delete your own posts.
 
-   ```bash
-   npm install
-   ```
+## 🛠 Tech Stack
 
-2. Start the app
+- **Frontend**: React Native (via Expo or CLI), TypeScript.
+- **State Management**: Context API.
+- **Navigation**: React Navigation (Stack & Tabs).
+- **Backend**: Node.js, Express JS, MongoDB (Mongoose).
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## 📂 Project Structure
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+```text
+src/
+├── api/            # Axios configurations and API services
+├── components/     # Reusable UI components (Buttons, MurmurCard, Inputs)
+├── hooks/          # Custom hooks (useAuth, useTimeline)
+├── navigation/     # Root, Auth, and App (Tab) navigators
+├── screens/        # Main screen components (Timeline, Profile, Detail)
+├── types/          # TypeScript interfaces and type definitions
+└── utils/          # Formatting tools and constants
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## ⚙️ Installation & Setup
 
-To learn more about developing your project with Expo, look at the following resources:
+### Prerequisites
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Node.js (v18+)
+- npm or yarn
+- React Native Environment (Android Studio / Xcode)
 
-## Join the community
+### Step 1: Clone the Repository
 
-Join our community of developers creating universal apps.
+```bash
+git clone https://github.com/ferdoushasanpr/Murmur-React-Native-Application.git
+cd Murmur-React-Native-Application
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```
+
+### Step 2: Install Dependencies
+
+```bash
+npm install
+
+```
+
+### Step 3: Environment Configuration
+
+Create a `.env` file in the root directory:
+
+```env
+API_URL=http://your-backend-ip:5000/api
+
+```
+
+### Step 4: Run the Application
+
+```bash
+# For iOS
+npx react-native run-ios
+
+# For Android
+npx react-native run-android
+
+```
+
+---
