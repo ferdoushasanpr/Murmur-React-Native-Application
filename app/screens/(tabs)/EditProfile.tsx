@@ -39,6 +39,17 @@ export default function EditProfile() {
       });
   };
 
+  const handleDelete = () => {
+    axios
+      .delete("http://10.0.2.2:3000/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        console.log("Successfully Account Deleted.");
+      })
+      .catch((error) => console.log(error));
+  };
+
   useEffect(() => {
     axios
       .get("http://10.0.2.2:3000/users/me", {
@@ -126,6 +137,9 @@ export default function EditProfile() {
             />
           </View>
         </View>
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+          <Text style={styles.deleteButtonText}>Delete Account</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -229,5 +243,19 @@ const styles = StyleSheet.create({
   bioInput: {
     height: 80,
     textAlignVertical: "top",
+  },
+  deleteButton: {
+    backgroundColor: "#e02d2dff",
+    marginHorizontal: 16,
+    marginVertical: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderRadius: 20,
+  },
+  deleteButtonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });
