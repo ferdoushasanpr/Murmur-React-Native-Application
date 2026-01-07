@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   ScrollView,
@@ -11,13 +12,48 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../../context/AuthContext";
 
 export default function EditProfile() {
-  const [name, setName] = useState("adele adelia");
-  const [bio, setBio] = useState(
-    "This is a sample bio. Update your profile to add a personal touch!"
-  );
-  const [location, setLocation] = useState("New York, NY");
+  const [name, setName] = useState("");
+  const [bio, setBio] = useState("");
+  const [password, setPassword] = useState("");
+  const { token } = useAuth();
+
+  const handleSubmit = () => {
+    const payload = {
+      name,
+      bio,
+      ...(password.trim() && { password }),
+    };
+
+    axios
+      .put("http://10.0.2.2:3000/users/me", payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        router.back();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://10.0.2.2:3000/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setName(response.data.name);
+        setBio(response.data.bio);
+      })
+      .catch((error) => {
+        console.error("Error fetching profile data:", error);
+      });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -29,12 +65,7 @@ export default function EditProfile() {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Edit Profile</Text>
         </View>
-        <TouchableOpacity
-          style={styles.saveButton}
-          onPress={() => {
-            /* Handle Save Logic */
-          }}
-        >
+        <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
           <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>
       </View>
@@ -84,12 +115,14 @@ export default function EditProfile() {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Location</Text>
+            <Text style={styles.label}>Change Password</Text>
             <TextInput
               style={styles.input}
-              value={location}
-              onChangeText={setLocation}
-              placeholderTextColor="#71767b"
+              placeholder="Password"
+              placeholderTextColor="#7a7a7a"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
             />
           </View>
         </View>
