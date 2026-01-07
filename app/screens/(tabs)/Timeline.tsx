@@ -24,7 +24,23 @@ interface Murmur {
   likeCount: number;
 }
 
-const MurmurItem: React.FC<{ item: Murmur }> = ({ item }) => (
+const toggleLikeHandler = (id: string, token: string) => {
+  axios
+    .post(`http://10.0.2.2:3000/murmurs/${id}/like`, null, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const MurmurItem: React.FC<{ item: Murmur; token: string }> = ({
+  item,
+  token,
+}) => (
   <View style={styles.card}>
     <Image
       source={{ uri: "https://i.pravatar.cc/150?u=sarah" }}
@@ -37,8 +53,12 @@ const MurmurItem: React.FC<{ item: Murmur }> = ({ item }) => (
       </View>
       <Text style={styles.contentText}>{item.content}</Text>
       <View style={styles.actions}>
-        <ActionIcon name="heart-outline" count={item.likeCount} />
-        <ActionIcon name="chatbubble-outline" />
+        <ActionIcon
+          name="heart-outline"
+          count={item.likeCount}
+          onPress={() => toggleLikeHandler(item.id, token)}
+        />
+        <ActionIcon name="chatbubble-outline" onPress={() => {}} />
       </View>
     </View>
   </View>
@@ -47,8 +67,13 @@ const MurmurItem: React.FC<{ item: Murmur }> = ({ item }) => (
 const ActionIcon: React.FC<{
   name: keyof typeof Ionicons.glyphMap;
   count?: number;
-}> = ({ name, count }) => (
-  <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
+  onPress: () => void;
+}> = ({ name, count, onPress }) => (
+  <TouchableOpacity
+    style={styles.actionButton}
+    activeOpacity={0.7}
+    onPress={onPress}
+  >
     <Ionicons name={name} size={18} color="#a1a1a1" />
     {count !== undefined && <Text style={styles.actionText}>{count}</Text>}
   </TouchableOpacity>
@@ -57,9 +82,6 @@ const ActionIcon: React.FC<{
 export default function Timeline(): JSX.Element {
   const [murmurs, setMurmurs] = useState<Murmur[]>([]);
   const { token } = useAuth();
-  const renderItem: ListRenderItem<Murmur> = ({ item }) => (
-    <MurmurItem item={item} />
-  );
 
   useEffect(() => {
     axios
@@ -73,6 +95,18 @@ export default function Timeline(): JSX.Element {
         console.error("Error fetching murmurs:", error);
       });
   }, [murmurs]);
+
+  if (!token) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text>Not authenticated</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const renderItem: ListRenderItem<Murmur> = ({ item }) => (
+    <MurmurItem item={item} token={token} />
+  );
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -94,6 +128,7 @@ export default function Timeline(): JSX.Element {
         />
       ) : (
         <View style={styles.emptyContainer}>
+          <Ionicons name="planet-outline" size={80} color="#222" />
           <Text style={styles.emptyText}>Follow Someone to Get Murmurs</Text>
         </View>
       )}
