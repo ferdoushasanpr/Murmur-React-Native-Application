@@ -2,6 +2,12 @@
 
 A cross-platform mobile application built with **React Native** and **TypeScript** that allows users to share "murmurs," follow friends, and engage with a global timeline. This project was developed as part of a technical evaluation.
 
+<img width="49%" alt="Screenshot_1767890088" src="https://github.com/user-attachments/assets/9df49c09-0976-4736-b8ba-1d20e659fae6" />
+<img width="49%" alt="Screenshot_1767890095" src="https://github.com/user-attachments/assets/f8b090dd-9bbf-4ddb-bceb-6e453eb0bdea" />
+<img width="49%" alt="Screenshot_1767894159" src="https://github.com/user-attachments/assets/6ea0a67c-e3f8-4177-8bd4-ef5afd403788" />
+
+
+
 ## 🚀 Features
 
 - **Authentication**: Secure Signup and Signin with JWT persistence.
