@@ -25,7 +25,7 @@ export default function Post() {
   const onSubmit = () => {
     axios
       .post(
-        "http://10.0.2.2:3000/murmurs/me",
+        `${process.env.EXPO_PUBLIC_API_URL}/murmurs/me`,
         { content },
         {
           headers: {

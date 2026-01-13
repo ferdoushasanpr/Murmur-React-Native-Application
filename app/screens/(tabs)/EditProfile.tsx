@@ -28,7 +28,7 @@ export default function EditProfile() {
     };
 
     axios
-      .put("http://10.0.2.2:3000/users/me", payload, {
+      .put(`${process.env.EXPO_PUBLIC_API_URL}/users/me`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -41,7 +41,7 @@ export default function EditProfile() {
 
   const handleDelete = () => {
     axios
-      .delete("http://10.0.2.2:3000/users/me", {
+      .delete(`${process.env.EXPO_PUBLIC_API_URL}/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -52,7 +52,7 @@ export default function EditProfile() {
 
   useEffect(() => {
     axios
-      .get("http://10.0.2.2:3000/users/me", {
+      .get(`${process.env.EXPO_PUBLIC_API_URL}/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

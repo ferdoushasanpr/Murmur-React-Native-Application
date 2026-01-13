@@ -20,7 +20,6 @@ interface User {
   followedCount: number;
   followerCount: number;
   createdAt: string;
-  // Add other fields from your API response
 }
 
 export default function Explore() {
@@ -36,7 +35,7 @@ export default function Explore() {
     setHasSearched(true);
     try {
       const response = await axios.get(
-        `http://10.0.2.2:3000/users/email/${searchQuery.trim()}`
+        `${process.env.EXPO_PUBLIC_API_URL}/users/email/${searchQuery.trim()}`
       );
       console.log("Search response:", response.data);
       setResult(response.data);

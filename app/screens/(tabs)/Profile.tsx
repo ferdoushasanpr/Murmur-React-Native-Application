@@ -37,7 +37,7 @@ export default function Profile() {
 
   const deleteMurmur = (murmurId: string) => {
     axios
-      .delete(`http://10.0.2.2:3000/murmurs/me/${murmurId}`, {
+      .delete(`${process.env.EXPO_PUBLIC_API_URL}/murmurs/me/${murmurId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -52,7 +52,7 @@ export default function Profile() {
 
   useEffect(() => {
     axios
-      .get("http://10.0.2.2:3000/users/me", {
+      .get(`${process.env.EXPO_PUBLIC_API_URL}/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -65,7 +65,7 @@ export default function Profile() {
       });
 
     axios
-      .get(`http://10.0.2.2:3000/murmurs/user/${userId}`)
+      .get(`${process.env.EXPO_PUBLIC_API_URL}/murmurs/user/${userId}`)
       .then((response) => {
         setMurmurs(response.data);
       })

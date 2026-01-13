@@ -24,7 +24,7 @@ export default function Login() {
     if (isLogin) {
       axios
         .post(
-          "http://10.0.2.2:3000/auth/signin",
+          `${process.env.EXPO_PUBLIC_API_URL}/auth/signin`,
           { email, password },
           {
             headers: {
@@ -49,7 +49,7 @@ export default function Login() {
     } else {
       axios
         .post(
-          "http://10.0.2.2:3000/auth/signup",
+          `${process.env.EXPO_PUBLIC_API_URL}/auth/signup`,
           { name, email, password },
           {
             headers: {

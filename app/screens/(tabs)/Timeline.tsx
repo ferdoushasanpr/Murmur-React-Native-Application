@@ -26,7 +26,7 @@ interface Murmur {
 
 const toggleLikeHandler = (id: string, token: string) => {
   axios
-    .post(`http://10.0.2.2:3000/murmurs/${id}/like`, null, {
+    .post(`${process.env.EXPO_PUBLIC_API_URL}/murmurs/${id}/like`, null, {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
@@ -85,7 +85,7 @@ export default function Timeline(): JSX.Element {
 
   useEffect(() => {
     axios
-      .get("http://10.0.2.2:3000/murmurs/", {
+      .get(`${process.env.EXPO_PUBLIC_API_URL}/murmurs/`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {

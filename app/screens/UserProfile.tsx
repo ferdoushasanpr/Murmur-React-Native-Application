@@ -30,11 +30,15 @@ const UserProfile: React.FC = () => {
   const handleFollow = () => {
     setIsFollowing(!isFollowing);
     axios
-      .post(`http://10.0.2.2:3000/follows/${profile.id}/follow`, null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .post(
+        `${process.env.EXPO_PUBLIC_API_URL}/follows/${profile.id}/follow`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         console.log("Follow/unfollow response:", response.data);
       })
@@ -46,11 +50,14 @@ const UserProfile: React.FC = () => {
   useEffect(() => {
     console.log(profile);
     axios
-      .get(`http://10.0.2.2:3000/follows/${profile.id}/is-following`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(
+        `${process.env.EXPO_PUBLIC_API_URL}/follows/${profile.id}/is-following`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         setIsFollowing(response.data.isFollowing);
       })
