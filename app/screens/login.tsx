@@ -13,6 +13,7 @@ import { useAuth } from "../context/AuthContext";
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +22,9 @@ export default function Login() {
   const { login } = useAuth();
 
   const handleAuth = () => {
+    if (loading) return;
+
+    setLoading(true);
     if (isLogin) {
       axios
         .post(
@@ -45,6 +49,9 @@ export default function Login() {
           setMessage(
             error.response.data.message || "Error logging in. Please try again."
           );
+        })
+        .finally(() => {
+          setLoading(false);
         });
     } else {
       axios
@@ -73,6 +80,9 @@ export default function Login() {
           setMessage(
             error.response.data.message || "Error signing up. Please try again."
           );
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
