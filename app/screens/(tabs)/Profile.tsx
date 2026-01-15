@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   StyleSheet,
@@ -33,7 +35,31 @@ export default function Profile() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [murmurs, setMurmurs] = useState<Murmur[]>([]);
   const [activeTab, setActiveTab] = useState("Murmurs");
+  const [loading, setLoading] = useState(false);
   const { userId, token, logout } = useAuth();
+
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
+      const userData = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/users/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUserData(userData.data);
+      const userMurmur = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/murmurs/user/${userId}`
+      );
+      setMurmurs(userMurmur.data);
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const deleteMurmur = (murmurId: string) => {
     axios
@@ -50,29 +76,15 @@ export default function Profile() {
       });
   };
 
-  useEffect(() => {
-    axios
-      .get(`${process.env.EXPO_PUBLIC_API_URL}/users/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setUserData(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching profile data:", error);
-      });
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfile();
+    }, [userId, token])
+  );
 
-    axios
-      .get(`${process.env.EXPO_PUBLIC_API_URL}/murmurs/user/${userId}`)
-      .then((response) => {
-        setMurmurs(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching profile data:", error);
-      });
-  }, [murmurs]);
+  useEffect(() => {
+    fetchProfile();
+  }, [userId, token]);
 
   const renderMurmur = (murmur: Murmur) => (
     <View key={murmur.id} style={styles.murmurCard}>
@@ -210,7 +222,7 @@ export default function Profile() {
 
         {/* 4. Content Area */}
         <View style={styles.contentArea}>
-          {murmurs.length === 0 ? (
+          {loading ? null : murmurs.length === 0 ? (
             <View style={styles.emptyStateContainer}>
               <Ionicons name="megaphone-outline" size={64} color="#333" />
               <Text style={styles.emptyStateTitle}>Capture the moment</Text>
@@ -223,6 +235,11 @@ export default function Profile() {
           )}
         </View>
       </ScrollView>
+      {loading && (
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size="large" color="#BB86FC" />
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -354,5 +371,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 8,
     fontSize: 15,
+  },
+  loaderOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
