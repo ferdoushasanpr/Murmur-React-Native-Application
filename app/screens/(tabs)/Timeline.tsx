@@ -1,7 +1,8 @@
 import { formatDate } from "@/app/utilities/date_format";
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
-import React, { JSX, useEffect, useState } from "react";
+import React, { JSX, useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -85,9 +86,7 @@ export default function Timeline(): JSX.Element {
   const [loading, setLoading] = useState(false);
   const { token } = useAuth();
 
-  useEffect(() => {
-    if (!token) return;
-
+  const fetchMurmurs = () => {
     setLoading(true);
     axios
       .get(`${process.env.EXPO_PUBLIC_API_URL}/murmurs/`, {
@@ -102,6 +101,18 @@ export default function Timeline(): JSX.Element {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchMurmurs();
+    }, [])
+  );
+
+  useEffect(() => {
+    if (!token) return;
+
+    fetchMurmurs();
   }, [token]);
 
   if (!token) {
