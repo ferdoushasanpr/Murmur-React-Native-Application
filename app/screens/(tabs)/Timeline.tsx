@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import React, { JSX, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   ListRenderItem,
@@ -81,9 +82,13 @@ const ActionIcon: React.FC<{
 
 export default function Timeline(): JSX.Element {
   const [murmurs, setMurmurs] = useState<Murmur[]>([]);
+  const [loading, setLoading] = useState(false);
   const { token } = useAuth();
 
   useEffect(() => {
+    if (!token) return;
+
+    setLoading(true);
     axios
       .get(`${process.env.EXPO_PUBLIC_API_URL}/murmurs/`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -93,8 +98,11 @@ export default function Timeline(): JSX.Element {
       })
       .catch((error) => {
         console.error("Error fetching murmurs:", error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-  }, [murmurs]);
+  }, [token]);
 
   if (!token) {
     return (
@@ -130,6 +138,11 @@ export default function Timeline(): JSX.Element {
         <View style={styles.emptyContainer}>
           <Ionicons name="planet-outline" size={80} color="#222" />
           <Text style={styles.emptyText}>Follow Someone to Get Murmurs</Text>
+        </View>
+      )}
+      {loading && (
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size="large" color="#BB86FC" />
         </View>
       )}
     </SafeAreaView>
@@ -180,5 +193,15 @@ const styles = StyleSheet.create({
     color: "#a1a1a1",
     fontSize: 16,
     textAlign: "center",
+  },
+  loaderOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
