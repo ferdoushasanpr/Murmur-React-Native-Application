@@ -1,4 +1,5 @@
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -34,6 +35,8 @@ const UserProfile: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { userId, token } = useAuth();
   const profile = route.params;
+
+  const navigation = useNavigation();
 
   const handleFollow = () => {
     setIsFollowing(!isFollowing);
@@ -83,6 +86,13 @@ const UserProfile: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Ionicons name="arrow-back" size={24} color="#fff" />
+      </TouchableOpacity>
+
       {/* Cover Photo */}
       <Image source={{ uri: profile.coverPhoto }} style={styles.coverPhoto} />
 
@@ -147,6 +157,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
+  },
+  backButton: {
+    position: "absolute",
+    top: 24,
+    left: 16,
+    zIndex: 10,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    padding: 8,
+    borderRadius: 20,
   },
   coverPhoto: {
     width: "100%",
