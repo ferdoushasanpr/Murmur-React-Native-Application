@@ -3,6 +3,7 @@ import axios from "axios";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   StyleSheet,
@@ -18,6 +19,7 @@ export default function EditProfile() {
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const { token } = useAuth();
 
   const handleSubmit = () => {
@@ -51,6 +53,7 @@ export default function EditProfile() {
   };
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`${process.env.EXPO_PUBLIC_API_URL}/users/me`, {
         headers: {
@@ -63,6 +66,9 @@ export default function EditProfile() {
       })
       .catch((error) => {
         console.error("Error fetching profile data:", error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -141,6 +147,11 @@ export default function EditProfile() {
           <Text style={styles.deleteButtonText}>Delete Account</Text>
         </TouchableOpacity>
       </ScrollView>
+      {loading && (
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size="large" color="#BB86FC" />
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -257,5 +268,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 14,
+  },
+  loaderOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
