@@ -1,7 +1,14 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/AuthContext";
 
@@ -24,11 +31,13 @@ type RouteParams = {
 const UserProfile: React.FC = () => {
   const route = useRoute<RouteProp<RouteParams, "Profile">>();
   const [isFollowing, setIsFollowing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { token } = useAuth();
   const profile = route.params;
 
   const handleFollow = () => {
     setIsFollowing(!isFollowing);
+    setLoading(true);
     axios
       .post(
         `${process.env.EXPO_PUBLIC_API_URL}/follows/${profile.id}/follow`,
@@ -44,11 +53,14 @@ const UserProfile: React.FC = () => {
       })
       .catch((error) => {
         console.error("Error fetching follow status:", error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
   useEffect(() => {
-    console.log(profile);
+    setLoading(true);
     axios
       .get(
         `${process.env.EXPO_PUBLIC_API_URL}/follows/${profile.id}/is-following`,
@@ -63,6 +75,9 @@ const UserProfile: React.FC = () => {
       })
       .catch((error) => {
         console.error("Error fetching follow status:", error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -115,6 +130,11 @@ const UserProfile: React.FC = () => {
           </Text>
         </TouchableOpacity>
       </View>
+      {loading && (
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size="large" color="#BB86FC" />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -197,5 +217,15 @@ const styles = StyleSheet.create({
   },
   followingButtonText: {
     color: "#ccc",
+  },
+  loaderOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
