@@ -32,7 +32,7 @@ const UserProfile: React.FC = () => {
   const route = useRoute<RouteProp<RouteParams, "Profile">>();
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { token } = useAuth();
+  const { userId, token } = useAuth();
   const profile = route.params;
 
   const handleFollow = () => {
@@ -116,19 +116,21 @@ const UserProfile: React.FC = () => {
         </View>
 
         {/* Follow Button */}
-        <TouchableOpacity
-          style={[styles.followButton, isFollowing && styles.followingButton]}
-          onPress={handleFollow}
-        >
-          <Text
-            style={[
-              styles.followButtonText,
-              isFollowing && styles.followingButtonText,
-            ]}
+        {profile.id !== userId && (
+          <TouchableOpacity
+            style={[styles.followButton, isFollowing && styles.followingButton]}
+            onPress={handleFollow}
           >
-            {isFollowing ? "Following" : "Follow"}
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={[
+                styles.followButtonText,
+                isFollowing && styles.followingButtonText,
+              ]}
+            >
+              {isFollowing ? "Following" : "Follow"}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
       {loading && (
         <View style={styles.loaderOverlay}>
